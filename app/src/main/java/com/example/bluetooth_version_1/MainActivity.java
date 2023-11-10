@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_BLUETOOTH = 123;
     static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static TextView textView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
             btSocket.connect();
             Log.d(TAG, "Connected to Bluetooth device.");
 
-            BluetoothThread btThread = new BluetoothThread(btSocket, textView);
-            btThread.start();
+            BluetoothThread bluetoothThread = new BluetoothThread(btSocket, textView);
+            bluetoothThread.start();
         } catch (IOException e) {
             Log.e(TAG, "Error connecting to Bluetooth device: " + e.getMessage());
         }

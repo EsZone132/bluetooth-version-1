@@ -24,25 +24,35 @@ class BluetoothThread extends Thread{
         }
         inputStream = tempInput;
     }
-
     public void run() {
+
         byte[] buffer = new byte[1024];
-        int bytes;
-        try {
-            while (true) {
-                bytes = inputStream.read(buffer);
-                if (bytes > 0) {
-                    final String receivedData = new String(buffer, 0, bytes);
+        int bytes = 0;
+        int numberOfReadings = 0;
+
+        while(true){ // Change value according to the number of sample points desired when clicking SCAN button
+            try{
+                buffer[bytes] = (byte) inputStream.read();
+                String receivedSentence;
+                if(buffer[bytes] == '\n'){
+                    receivedSentence = new String(buffer, 0, bytes);
+                    Log.d(TAG, receivedSentence);
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            textView.setText("Received Data: " + receivedData);
+                            textView.setText(receivedSentence);
                         }
                     });
+                    bytes = 0;
+                    numberOfReadings++;
                 }
+                else{
+                    bytes++;
+                }
+            } catch(IOException e){
+                Log.d(TAG, "Input stream disconnected", e);
+                break;
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Error reading data from InputStream: " + e.getMessage());
         }
     }
 }
